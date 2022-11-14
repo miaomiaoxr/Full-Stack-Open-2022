@@ -25,12 +25,12 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <SuccessNotification message = {successMessage} />
+      <ErrorNotification message = {errorMessage} />
       <Filter setFilterKey={setFilterKey} />
       <h3>Add a new</h3>
-      <SuccessNotification message = {successMessage} />
-      <PersonForm persons={persons} setPersons={setPersons} newNumber={newNumber} setNewNumber={setNewNumber} setNewName={setNewName} newName={newName} setMessage = {setSuccessMessage}/>
+      <PersonForm persons={persons} setPersons={setPersons} newNumber={newNumber} setNewNumber={setNewNumber} setNewName={setNewName} newName={newName} setMessage = {setSuccessMessage} setErrorMessage = {setErrorMessage}/>
       <h3>Numbers</h3>
-      <ErrorNotification message = {errorMessage} />
       <Persons persons={persons} filterKey={filterKey} setPersons={setPersons} setMessage = {setErrorMessage}/>
     </div>
   )

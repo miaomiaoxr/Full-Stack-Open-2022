@@ -1,6 +1,6 @@
 import NetWork from "../services/NetWork"
 
-const PersonForm = ({ persons, setPersons, newName, setNewName, newNumber, setNewNumber, setMessage }) => {
+const PersonForm = ({ persons, setPersons, newName, setNewName, newNumber, setNewNumber, setMessage, setErrorMessage }) => {
 
     const numberRenew = (newName, newNumber) => {//making changes to the phone numbers ON BACKEND
         let newObject = persons.filter(person => person.name.toLowerCase() === newName.toLowerCase())[0]
@@ -15,17 +15,31 @@ const PersonForm = ({ persons, setPersons, newName, setNewName, newNumber, setNe
     const addName = (event) => {
         event.preventDefault()
         if (!persons.map(person => person.name).includes(newName)) {
-            setMessage(`Added ${newName}`)
-            setTimeout(() => { setMessage(null) }, 3000);
+
 
             const newObject = {
                 name: newName,
                 id: parseInt(10000 * Math.random(), 10),
                 number: newNumber,
             }
+
             NetWork
                 .create(newObject)
-                .then(response => setPersons(persons.concat(response.data)))
+                .then(response => {
+                    setMessage(`Added ${newName}`)
+                    setTimeout(() => { setMessage(null) }, 3000);
+                    setPersons(persons.concat(response.data));
+                })
+                .catch(error => {
+                    let message = 'Something went wrong';
+                    if (error.response) {
+                        message = error.response.data.error;
+                        console.log(error.response.data); // => the response payload 
+                    }
+                    console.log(error.toJSON())
+                    setErrorMessage(`Error:${message}`)
+                    setTimeout(() => { setErrorMessage(null) }, 3000);
+                })
         }
         else {/*TODO: making changes to the phone numbers ON BACKEND */
             if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
