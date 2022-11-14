@@ -13,9 +13,12 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^12.0.3",
+    "errorhandler": "^1.5.1",
     "express": "^4.17.2",
+    "mongodb": "^4.7.0",
     "mongoose": "^6.1.6",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "node-fetch": "^3.2.6"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
