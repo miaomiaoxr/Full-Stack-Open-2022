@@ -1,4 +1,3 @@
-const { request, response } = require('express')
 require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
@@ -12,8 +11,8 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :J
 app.use(cors())
 
 
-morgan.token('JSON', (request, response) => {
-  if (request.method !== 'POST') return ""
+morgan.token('JSON', (request) => {
+  if (request.method !== 'POST') return ''
   return JSON.stringify(request.body)
 })
 
@@ -68,15 +67,15 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Note.findByIdAndRemove(request.params.id)
-  .then(result=>{
-    response.status(204).end()
-  })
-  .catch(error=>next(error))
+    .then(() => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (request, response, next) => {
   if (!request.body) {
-    return response.status(400).json({ error: `no content` })
+    return response.status(400).json({ error: 'no content' })
   }
 
   // const id = Math.floor(Math.random() * 1000)
@@ -93,35 +92,35 @@ app.post('/api/persons', (request, response, next) => {
   // if (!note.number) {
   //   return response.status(400).json({ error: `number is missing` })
   // }
-  
-  
-  Note.find({name:note.name},(error,data)=>{
-    if(error){
+
+
+  Note.find({ name: note.name }, (error, data) => {
+    if (error) {
       console.error(error)
-      return response.status(400).send({error:'bad name'})
+      return response.status(400).send({ error: 'bad name' })
     }
 
-    if(data.length==0){
+    if (data.length == 0) {
       note.save().then(savedNote => {
         response.json(savedNote)
       }).catch(error => next(error))
-    }else{
-      return response.status(400).json({ error: `name must be unique` })
+    } else {
+      return response.status(400).json({ error: 'name must be unique' })
     }
   })
-  
+
 })
 
-app.put('/api/persons',(request,response,next)=>{
-  if(!request.body){
+app.put('/api/persons', (request, response, next) => {
+  if (!request.body) {
     next('Request body is empty')
     return
-  }else{//!! the number CAN BE empty!!!
-    Note.findOneAndUpdate({name:request.body.name},{ $set:{number : request.body.number }},{runValidators:true})
-    .catch(error=>{
-      console.log(error)
-      next(error)
-    })
+  } else {//!! the number CAN BE empty!!!
+    Note.findOneAndUpdate({ name: request.body.name }, { $set: { number: request.body.number } }, { runValidators: true })
+      .catch(error => {
+        console.log(error)
+        next(error)
+      })
   }
 })
 
@@ -138,8 +137,8 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
 
-const unknownEndpoint = (request,response) =>{
-  response.status(404).send({error:'unknown endpoint'})
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
 }
 app.use(unknownEndpoint)
 
@@ -148,7 +147,7 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  }else{
+  } else if (error.name === 'ValidationError') {
     return response.status(400).send({ error: `${error.message}` })
   }
 
