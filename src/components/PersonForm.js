@@ -3,13 +3,31 @@ import NetWork from "../services/NetWork"
 const PersonForm = ({ persons, setPersons, newName, setNewName, newNumber, setNewNumber, setMessage, setErrorMessage }) => {
 
     const numberRenew = (newName, newNumber) => {//making changes to the phone numbers ON BACKEND
-        let newObject = persons.filter(person => person.name.toLowerCase() === newName.toLowerCase())[0]
+        let newObject = persons.find(person => person.name === newName)
         newObject = { ...newObject, number: newNumber }
-        let newPersons = persons.filter(person => person.id !== newObject.id)
-        newPersons.push(newObject)
-        console.log(newPersons)
-        setPersons(newPersons)
-        NetWork.update(newObject)
+
+        NetWork.update(newObject).then(_ => {
+            let newPersons = persons.filter(person => person.id !== newObject.id)
+            newPersons.push(newObject)
+            console.log(newPersons)
+            setPersons(newPersons)
+
+            setMessage(`${newName}'s number has been updated`)
+            setTimeout(() => { setMessage(null) }, 3000)
+        })
+            .catch(error => {
+                let message = 'Something went wrong';
+                if (error.response) {
+                    message = error.response.data.error;
+                    console.log(error.response.data);
+                }
+                console.log(error.toJSON())
+                setErrorMessage(`Error:${message}`)
+                setTimeout(() => { setErrorMessage(null) }, 3000);
+            })
+
+
+
     }
 
     const addName = (event) => {
@@ -34,7 +52,7 @@ const PersonForm = ({ persons, setPersons, newName, setNewName, newNumber, setNe
                     let message = 'Something went wrong';
                     if (error.response) {
                         message = error.response.data.error;
-                        console.log(error.response.data); // => the response payload 
+                        console.log(error.response.data); // custom error message 
                     }
                     console.log(error.toJSON())
                     setErrorMessage(`Error:${message}`)
@@ -44,8 +62,6 @@ const PersonForm = ({ persons, setPersons, newName, setNewName, newNumber, setNe
         else {/*TODO: making changes to the phone numbers ON BACKEND */
             if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
                 numberRenew(newName, newNumber)
-                setMessage(`${newName}'s number has been updated`)
-                setTimeout(() => { setMessage(null) }, 3000)
             }
         }
         setNewName("")
