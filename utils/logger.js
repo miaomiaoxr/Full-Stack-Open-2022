@@ -1,13 +1,13 @@
 const info = (...message) => {
-    console.log(...message);
+  console.log(...message)
 }
 
 const error = (...message) => {
-    console.error(...message);
+  console.error(...message)
 }
 
 
 module.exports = {
-    info,
-    error
+  info,
+  error
 }
