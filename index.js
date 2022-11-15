@@ -87,12 +87,12 @@ app.post('/api/persons', (request, response, next) => {
   })
   console.log(note)
 
-  if (!note.name) {
-    return response.status(400).json({ error: `name is missing` })
-  }
-  if (!note.number) {
-    return response.status(400).json({ error: `number is missing` })
-  }
+  // if (!note.name) {
+  //   return response.status(400).json({ error: `name is missing` })
+  // }
+  // if (!note.number) {
+  //   return response.status(400).json({ error: `number is missing` })
+  // }
   
   
   Note.find({name:note.name},(error,data)=>{
@@ -105,7 +105,6 @@ app.post('/api/persons', (request, response, next) => {
       note.save().then(savedNote => {
         response.json(savedNote)
       }).catch(error => next(error))
-      return
     }else{
       return response.status(400).json({ error: `name must be unique` })
     }
