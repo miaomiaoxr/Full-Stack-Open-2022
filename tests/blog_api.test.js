@@ -18,6 +18,13 @@ test('all blogs returned',async ()=>{
   expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
 
+test('id is defined', async () => {
+  const response = await api.get('/api/blogs')
+  for(let blog of response.body){
+    expect(blog.id).toBeDefined()
+  }
+})
+
 beforeEach(async () => {
   await Blog.deleteMany({})
 
