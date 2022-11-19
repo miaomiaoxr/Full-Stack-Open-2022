@@ -13,19 +13,19 @@ test('blogs return as json', async () => {
     .expect('Content-Type', /application\/json/)
 })
 
-test('all blogs returned',async ()=>{
+test('all blogs returned', async () => {
   const response = await api.get('/api/blogs')
   expect(response.body).toHaveLength(helper.initialBlogs.length)
 })
 
 test('id is defined', async () => {
   const response = await api.get('/api/blogs')
-  for(let blog of response.body){
+  for (let blog of response.body) {
     expect(blog.id).toBeDefined()
   }
 })
 
-test('post is work',async () => {
+test('post is work', async () => {
   await api
     .post('/api/blogs')
     .send(helper.postBlog)
@@ -42,7 +42,7 @@ test('post is work',async () => {
   )
 })
 
-test('post without likes',async () => {
+test('post without likes', async () => {
   await api
     .post('/api/blogs')
     .send(helper.nolikeBlog)
@@ -54,6 +54,17 @@ test('post without likes',async () => {
   expect(blog.likes).toBe(0)
 })
 
+test('post without title and url', async () => {
+  await api
+    .post('/api/blogs')
+    .send(helper.noUrlBlog)
+    .expect(400)
+
+  await api
+    .post('/api/blogs')
+    .send(helper.noTitleBlog)
+    .expect(400)
+})
 
 beforeEach(async () => {
   await Blog.deleteMany({})

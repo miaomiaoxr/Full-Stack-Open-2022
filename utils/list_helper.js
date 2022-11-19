@@ -103,6 +103,18 @@ const nolikeBlog = {
   url: 'http://www.no.like',
 }
 
+const noTitleBlog = {
+  author: 'No title',
+  url: 'http://www.no.title',
+  likes: 1,
+}
+
+const noUrlBlog = {
+  title: 'No url',
+  author: 'No url',
+  likes: 1,
+}
+
 module.exports = {
   dummy,
   totalLikes,
@@ -111,5 +123,7 @@ module.exports = {
   mostLikes,
   initialBlogs,
   postBlog,
-  nolikeBlog
+  nolikeBlog,
+  noTitleBlog,
+  noUrlBlog
 }
