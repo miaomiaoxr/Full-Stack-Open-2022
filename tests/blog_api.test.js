@@ -42,6 +42,19 @@ test('post is work',async () => {
   )
 })
 
+test('post without likes',async () => {
+  await api
+    .post('/api/blogs')
+    .send(helper.nolikeBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+  const response = await api.get('/api/blogs')
+  const blog = response.body.find(blog => blog.title === helper.nolikeBlog.title)
+  expect(blog.likes).toBeDefined()
+  expect(blog.likes).toBe(0)
+})
+
+
 beforeEach(async () => {
   await Blog.deleteMany({})
 
