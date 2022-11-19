@@ -89,11 +89,27 @@ const initialBlogs = [
   }
 ]
 
+const postBlog = {
+  title: 'qweqeasd',
+  author: 'Omegle',
+  url: 'http://www.u.arizona.edu/wweq.html',
+  likes: 1,
+}
+
+
+const nolikeBlog = {
+  title: 'No like',
+  author: 'Unliked',
+  url: 'http://www.no.like',
+}
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
   mostLikes,
-  initialBlogs
+  initialBlogs,
+  postBlog,
+  nolikeBlog
 }

@@ -25,6 +25,23 @@ test('id is defined', async () => {
   }
 })
 
+test('post is work',async () => {
+  await api
+    .post('/api/blogs')
+    .send(helper.postBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+
+  const contents = response.body.map(r => r.title)
+
+  expect(response.body).toHaveLength(helper.initialBlogs.length + 1)
+  expect(contents).toContain(
+    helper.postBlog.title
+  )
+})
+
 beforeEach(async () => {
   await Blog.deleteMany({})
 
