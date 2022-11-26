@@ -77,6 +77,18 @@ test('delete works', async () => {
   response2.body.map(blog => expect(blog.id).not.toBe(delBlog.id))
 })
 
+test('update likes', async () => {
+  const response = await api.get('/api/blogs')
+
+  const updateBlog = response.body[0]
+  
+  const newLikes = updateBlog.likes + 1
+
+  const resBody = await api.put(`/api/blogs/${updateBlog.id}`).send({likes: newLikes}).expect(200)
+
+  expect(resBody.body.likes).toBe(newLikes)
+})
+
 beforeEach(async () => {
   await Blog.deleteMany({})
 
