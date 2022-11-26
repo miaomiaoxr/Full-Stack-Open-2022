@@ -66,6 +66,17 @@ test('post without title and url', async () => {
     .expect(400)
 })
 
+test('delete works', async () => {
+  const response = await api.get('/api/blogs')
+
+  const delBlog = response.body[0]
+  await api.delete(`/api/blogs/${delBlog.id}`).expect(204)
+
+  const response2 = await api.get('/api/blogs')
+
+  response2.body.map(blog => expect(blog.id).not.toBe(delBlog.id))
+})
+
 beforeEach(async () => {
   await Blog.deleteMany({})
 
