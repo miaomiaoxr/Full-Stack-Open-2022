@@ -6,6 +6,7 @@ const User = require('../models/user')
 const helper = require('../utils/list_helper')
 
 const api = supertest(app)
+let token = ''
 
 test('blogs return as json', async () => {
   await api
@@ -29,6 +30,7 @@ test('id is defined', async () => {
 test('post is work', async () => {
   await api
     .post('/api/blogs')
+    .set('Authorization', 'Bearer ' + token)
     .send(helper.postBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -46,6 +48,7 @@ test('post is work', async () => {
 test('post without likes', async () => {
   await api
     .post('/api/blogs')
+    .set('Authorization', 'Bearer ' + token)
     .send(helper.nolikeBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
@@ -58,11 +61,13 @@ test('post without likes', async () => {
 test('post without title and url', async () => {
   await api
     .post('/api/blogs')
+    .set('Authorization', 'Bearer ' + token)
     .send(helper.noUrlBlog)
     .expect(400)
 
   await api
     .post('/api/blogs')
+    .set('Authorization', 'Bearer ' + token)
     .send(helper.noTitleBlog)
     .expect(400)
 })
@@ -96,8 +101,12 @@ beforeEach(async () => {
 
   const initBlogList = helper.initialBlogs.map(blog => new Blog(blog))
   const promises = initBlogList.map(blog => blog.save())
-  promises.push(new User(helper.initialUser).save())
   await Promise.all(promises)
+
+  await api.post('/api/users').send(helper.initialUser)
+
+  const res = await api.post('/api/login').send(helper.initialUser)
+  token = res.body.token
 })
 
 afterAll(() => {

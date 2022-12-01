@@ -125,7 +125,7 @@ const usersInDb = async () => {
 const initialUser = {
   username: 'first',
   name: 'first',
-  passwordHash: 'first',
+  password: 'first',
 }
 
 
