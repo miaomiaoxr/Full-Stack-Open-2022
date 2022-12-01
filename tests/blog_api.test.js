@@ -72,11 +72,22 @@ test('post without title and url', async () => {
     .expect(400)
 })
 
+test('delete work without token', async () => {
+  const response = await api.get('/api/blogs')
+
+  const delBlog = response.body[0]
+  
+  const res = await api.delete(`/api/blogs/${delBlog.id}`).expect(401)
+
+  expect(res.body.error).toContain('Unauthorized')
+
+})
+
 test('delete works', async () => {
   const response = await api.get('/api/blogs')
 
   const delBlog = response.body[0]
-  await api.delete(`/api/blogs/${delBlog.id}`).expect(204)
+  await api.delete(`/api/blogs/${delBlog.id}`).set('Authorization', 'Bearer ' + token).expect(204)
 
   const response2 = await api.get('/api/blogs')
 
@@ -99,14 +110,14 @@ beforeEach(async () => {
   await Blog.deleteMany({})
   await User.deleteMany({})
 
-  const initBlogList = helper.initialBlogs.map(blog => new Blog(blog))
-  const promises = initBlogList.map(blog => blog.save())
-  await Promise.all(promises)
-
+  //init user
   await api.post('/api/users').send(helper.initialUser)
-
   const res = await api.post('/api/login').send(helper.initialUser)
   token = res.body.token
+
+  const promises = helper.initialBlogs.map(blog => api.post('/api/blogs').set('Authorization', 'Bearer ' + token).send(blog))
+  await Promise.all(promises)
+ 
 })
 
 afterAll(() => {
