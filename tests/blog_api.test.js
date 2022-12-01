@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('../utils/list_helper')
 
 const api = supertest(app)
@@ -91,9 +92,11 @@ test('update likes', async () => {
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
 
   const initBlogList = helper.initialBlogs.map(blog => new Blog(blog))
   const promises = initBlogList.map(blog => blog.save())
+  promises.push(new User(helper.initialUser).save())
   await Promise.all(promises)
 })
 
